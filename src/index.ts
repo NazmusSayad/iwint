@@ -5,6 +5,7 @@ import path from 'path'
 import AdmZip from 'adm-zip'
 import { addToPath } from 'env-win'
 import getLatestZip from './getLatestZip'
+import addToContextMenu from './addToContextMenu'
 import setCompatibilitySettings from './setCompatibilitySettings'
 
 async function main() {
@@ -42,6 +43,10 @@ async function main() {
 
   console.log('> Adding Windows Terminal to PATH...')
   addToPath('User', OUTPUT_DIR)
+
+  console.log('> Adding Windows Terminal to context menu...')
+  addToContextMenu('WindowsTerminal', 'Open Terminal', wtExe)
+  addToContextMenu('WindowsTerminalAdmin', 'Open Terminal (Admin)', wtaExe)
 
   console.log('Windows Terminal installed successfully!')
 }
