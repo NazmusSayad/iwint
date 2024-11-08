@@ -44,5 +44,5 @@ export default async function (
   exe: string,
   extended: boolean
 ) {
-  writeItem(key, label, exe + ' -d %V', exe, extended)
+  writeItem('!' + key, label, exe + ' -d %V', exe, extended)
 }
