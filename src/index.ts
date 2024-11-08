@@ -45,8 +45,13 @@ async function main() {
   addToPath('User', OUTPUT_DIR)
 
   console.log('> Adding Windows Terminal to context menu...')
-  addToContextMenu('WindowsTerminal', 'Open Terminal', wtExe)
-  addToContextMenu('WindowsTerminalAdmin', 'Open Terminal (Admin)', wtaExe)
+  addToContextMenu('WindowsTerminal', 'Open Terminal', wtExe, false)
+  addToContextMenu(
+    'WindowsTerminalAdmin',
+    'Open Terminal (Admin)',
+    wtaExe,
+    true
+  )
 
   console.log('Windows Terminal installed successfully!')
 }

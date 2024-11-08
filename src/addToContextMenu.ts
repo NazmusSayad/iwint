@@ -38,6 +38,11 @@ function writeItem(
   }
 }
 
-export default async function (key: string, label: string, exe: string) {
-  writeItem(key, label, exe + ' -d %V', exe)
+export default async function (
+  key: string,
+  label: string,
+  exe: string,
+  extended: boolean
+) {
+  writeItem(key, label, exe + ' -d %V', exe, extended)
 }
