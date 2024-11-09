@@ -15,7 +15,7 @@ execSync('tsc', { stdio: 'inherit' })
 console.log('> Building exe file...')
 const build = exe({
   out: OUT_FILE,
-  // icon: './icon.ico',
+  icon: './icon.ico',
   entry: path.join(OUT_DIR, './index.js'),
 })
 
