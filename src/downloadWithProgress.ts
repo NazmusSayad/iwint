@@ -1,59 +1,53 @@
+import { formatBytes } from './utils'
+import { https, http } from 'follow-redirects'
 
-function formatBytes(bytes: number): string {
-  const units = ['B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB']
-  let unitIndex = 0
+export default async function (url: string): Promise<Buffer> {
+  const client = url.startsWith('https') ? https : http
 
-  while (bytes >= 1024 && unitIndex < units.length - 1) {
-    bytes /= 1024
-    unitIndex++
-  }
-
-  return `${bytes.toFixed(2)} ${units[unitIndex]}`
-}
-
-export default async function (url: string) {
-  const response = await fetch(url)
-
-  if (!response.ok)
-    throw new Error(`Failed to download: ${response.statusText}`)
-
-  const contentLength = response.headers.get('content-length')
-  const totalSize = contentLength ? parseInt(contentLength, 10) : null
-  let downloadedSize = 0
-
-  const reader = response.body?.getReader()
-  const chunks: Uint8Array[] = []
-
-  if (!reader) throw new Error('Failed to read response body.')
-  function write(msg: string) {
-    process.stdout.cursorTo(0)
-    process.stdout.clearScreenDown()
-    process.stdout.write(msg)
-  }
-
-  const totalSizeInUnits = totalSize !== null && formatBytes(totalSize)
-  while (true) {
-    const { done, value } = await reader.read()
-    if (done) break
-    if (value) {
-      downloadedSize += value.length
-      chunks.push(value)
-
-      if (totalSize) {
-        const percentage = ((downloadedSize / totalSize) * 100).toFixed(2)
-        const downloadedInUnits = formatBytes(downloadedSize)
-
-        write(
-          `- Downloaded ${percentage}% (${downloadedInUnits}/${totalSizeInUnits})...`
-        )
-      } else {
-        write(
-          `- Downloaded ${formatBytes(downloadedSize)} (total size unknown)...`
-        )
+  return new Promise((resolve, reject) => {
+    const req = client.get(url, (res) => {
+      if (res.statusCode !== 200) {
+        return reject(new Error(`Failed to download: ${res.statusMessage}`))
       }
-    }
-  }
 
-  console.log('')
-  return Buffer.from(await new Blob(chunks).arrayBuffer())
+      const totalSize =
+        parseInt(res.headers['content-length'] || '', 10) || null
+      let downloadedSize = 0
+      const chunks: Uint8Array[] = []
+
+      function write(msg: string): void {
+        process.stdout.cursorTo(0)
+        process.stdout.clearScreenDown()
+        process.stdout.write(msg)
+      }
+
+      const totalSizeInUnits = totalSize !== null && formatBytes(totalSize)
+
+      res.on('data', (chunk) => {
+        downloadedSize += chunk.length
+        chunks.push(chunk)
+
+        if (totalSize) {
+          const percentage = ((downloadedSize / totalSize) * 100).toFixed(2)
+          const downloadedInUnits = formatBytes(downloadedSize)
+          write(
+            `- Downloaded ${percentage}% (${downloadedInUnits}/${totalSizeInUnits})...`
+          )
+        } else {
+          write(
+            `- Downloaded ${formatBytes(
+              downloadedSize
+            )} (total size unknown)...`
+          )
+        }
+      })
+
+      res.on('end', () => {
+        console.log('')
+        resolve(Buffer.concat(chunks))
+      })
+    })
+
+    req.on('error', reject)
+  })
 }

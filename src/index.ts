@@ -1,8 +1,7 @@
-#!/usr/bin/env node
-
 import fs from 'fs'
 import path from 'path'
 import AdmZip from 'adm-zip'
+import readLine from 'readline'
 import { addToPath } from 'env-win'
 import getLatestZip from './getLatestZip'
 import addToContextMenu from './addToContextMenu'
@@ -56,11 +55,29 @@ async function main() {
   console.log('Windows Terminal installed successfully!')
 }
 
-main().catch((err) => {
-  console.error(
-    'An error occurred while installing Windows Terminal:',
-    err.message
-  )
+;(async () => {
+  try {
+    await main()
+    console.log('')
+  } catch (err: any) {
+    console.log('')
+    console.error(
+      'An error occurred while installing Windows Terminal:',
+      err.message
+    )
+  } finally {
+    const rl = readLine.createInterface({
+      input: process.stdin,
+      output: process.stdout,
+    })
 
-  process.exit(1)
-})
+    process.stdin.setRawMode(true)
+    process.stdin.resume()
+
+    process.stdout.write('Press any key to exit...')
+    process.stdin.on('data', () => {
+      rl.close()
+      process.exit()
+    })
+  }
+})()

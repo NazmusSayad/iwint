@@ -2,9 +2,10 @@
   "compilerOptions": {
     "baseUrl": "./src",
     "outDir": "./dist",
+    "module": "CommonJS",
+    "target": "ESNext",
     "moduleResolution": "node",
     "esModuleInterop": true,
-    "target": "ES6",
     "skipLibCheck": true,
     "strict": true,
     "paths": { "@/*": ["./*"] }
