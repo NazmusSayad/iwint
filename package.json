@@ -1,20 +1,18 @@
 {
   "name": "iwint",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "commonjs",
   "scripts": {
     "build": "node ./build.cjs",
     "dev": "tsc --watch",
     "run": "run ./src/index.ts",
-    "start": "node ./dist/index.js",
-    "pkg": "pkg ./dist/index.js --target node16-win --output ./dist/iwint.exe"
+    "start": "node ./dist/index.js"
   },
   "bin": "./dist/index.js",
   "devDependencies": {
+    "@angablue/exe": "^3.2.3",
     "@types/adm-zip": "^0.5.6",
-    "@types/axios": "^0.9.36",
     "@types/follow-redirects": "^1.14.4",
-    "@types/winreg": "^1.2.36",
     "typescript": "^5.6.3"
   },
   "dependencies": {
