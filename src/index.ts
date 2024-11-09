@@ -4,6 +4,7 @@ import AdmZip from 'adm-zip'
 import readLine from 'readline'
 import { addToPath } from 'env-win'
 import getLatestZip from './getLatestZip'
+import createShortcut from './createShortcut'
 import addToContextMenu from './addToContextMenu'
 import setCompatibilitySettings from './setCompatibilitySettings'
 
@@ -43,6 +44,14 @@ async function main() {
   console.log('> Adding Windows Terminal to PATH...')
   addToPath('User', OUTPUT_DIR)
 
+  console.log('> Creating shortcut for Windows Terminal...')
+  const shortcutDir = path.join(
+    process.env.APPDATA ??
+      path.join(process.env.USERPROFILE ?? '', 'AppData', 'Roaming'),
+    'Microsoft/Windows/Start Menu/Programs'
+  )
+  createShortcut(wtExe, path.join(shortcutDir, 'Windows Terminal.lnk'))
+
   console.log('> Adding Windows Terminal to context menu...')
   addToContextMenu('WindowsTerminal', 'Open Terminal', wtExe, false)
   addToContextMenu(
@@ -74,7 +83,7 @@ async function main() {
     process.stdin.setRawMode(true)
     process.stdin.resume()
 
-    process.stdout.write('Press any key to exit...')
+    console.log('Press any key to exit...')
     process.stdin.on('data', () => {
       rl.close()
       process.exit()
