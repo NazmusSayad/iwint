@@ -8,32 +8,32 @@ function writeItem(
   extended = false
 ) {
   execSync(
-    `reg add "HKCU\\SOFTWARE\\Classes\\Directory\\shell\\${name}" /ve /t REG_SZ /d "${label}" /f`
+    `reg add "HKLM\\SOFTWARE\\Classes\\Directory\\shell\\${name}" /ve /t REG_SZ /d "${label}" /f`
   )
   execSync(
-    `reg add "HKCU\\SOFTWARE\\Classes\\Directory\\shell\\${name}" /v Icon /t REG_SZ /d "${icon}" /f`
+    `reg add "HKLM\\SOFTWARE\\Classes\\Directory\\shell\\${name}" /v Icon /t REG_SZ /d "${icon}" /f`
   )
   execSync(
-    `reg add "HKCU\\SOFTWARE\\Classes\\Directory\\shell\\${name}\\command" /ve /t REG_SZ /d "${command}" /f`
+    `reg add "HKLM\\SOFTWARE\\Classes\\Directory\\shell\\${name}\\command" /ve /t REG_SZ /d "${command}" /f`
   )
   if (extended) {
     execSync(
-      `reg add "HKCU\\SOFTWARE\\Classes\\Directory\\shell\\${name}" /v Extended /t REG_SZ /d "" /f`
+      `reg add "HKLM\\SOFTWARE\\Classes\\Directory\\shell\\${name}" /v Extended /t REG_SZ /d "" /f`
     )
   }
 
   execSync(
-    `reg add "HKCU\\SOFTWARE\\Classes\\Directory\\background\\shell\\${name}" /ve /t REG_SZ /d "${label}" /f`
+    `reg add "HKLM\\SOFTWARE\\Classes\\Directory\\background\\shell\\${name}" /ve /t REG_SZ /d "${label}" /f`
   )
   execSync(
-    `reg add "HKCU\\SOFTWARE\\Classes\\Directory\\background\\shell\\${name}" /v Icon /t REG_SZ /d "${icon}" /f`
+    `reg add "HKLM\\SOFTWARE\\Classes\\Directory\\background\\shell\\${name}" /v Icon /t REG_SZ /d "${icon}" /f`
   )
   execSync(
-    `reg add "HKCU\\SOFTWARE\\Classes\\Directory\\background\\shell\\${name}\\command" /ve /t REG_SZ /d "${command}" /f`
+    `reg add "HKLM\\SOFTWARE\\Classes\\Directory\\background\\shell\\${name}\\command" /ve /t REG_SZ /d "${command}" /f`
   )
   if (extended) {
     execSync(
-      `reg add "HKCU\\SOFTWARE\\Classes\\Directory\\background\\shell\\${name}" /v Extended /t REG_SZ /d "" /f`
+      `reg add "HKLM\\SOFTWARE\\Classes\\Directory\\background\\shell\\${name}" /v Extended /t REG_SZ /d "" /f`
     )
   }
 }

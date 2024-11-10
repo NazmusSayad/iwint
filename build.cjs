@@ -17,6 +17,7 @@ const build = exe({
   out: OUT_FILE,
   icon: './icon.ico',
   entry: path.join(OUT_DIR, './index.js'),
+  executionLevel: 'requireAdministrator',
 })
 
 build.then(() => {

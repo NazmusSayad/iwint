@@ -8,14 +8,17 @@ import createShortcut from './createShortcut'
 import addToContextMenu from './addToContextMenu'
 import setCompatibilitySettings from './setCompatibilitySettings'
 
-async function main() {
-  const OUTPUT_DIR = path.join(
-    process.env.LOCALAPPDATA ??
-      path.join(process.env.USERPROFILE ?? '', 'AppData', 'Local'),
-    'Microsoft',
-    'Windows Terminal'
-  )
+const INSTALL_DIR = path.join(
+  process.env.ProgramW6432 ?? process.env.PROGRAMFILES ?? 'C:\\Program Files',
+  'Windows Terminal'
+)
 
+const START_MENU_PROGRAMS_DIR = path.join(
+  process.env.ProgramData ?? process.env.ALLUSERSPROFILE ?? 'C:\\ProgramData',
+  'Microsoft\\Windows\\Start Menu\\Programs'
+)
+
+async function main() {
   console.log('> Downloading latest Windows Terminal...')
   const zipBuffer = await getLatestZip()
 
@@ -25,7 +28,7 @@ async function main() {
   console.log('- Writing files to disk...')
   zip.getEntries().forEach((entry) => {
     const entryPathParts = entry.entryName.split('/').slice(1).join('/')
-    const outputPath = path.join(OUTPUT_DIR, entryPathParts)
+    const outputPath = path.join(INSTALL_DIR, entryPathParts)
 
     if (entry.isDirectory) {
       fs.mkdirSync(outputPath, { recursive: true })
@@ -34,23 +37,23 @@ async function main() {
     }
   })
 
-  const wtExe = path.join(OUTPUT_DIR, 'wt.exe')
-  const wtaExe = path.join(OUTPUT_DIR, 'wta.exe')
+  const wtExe = path.join(INSTALL_DIR, 'wt.exe')
+  const wtaExe = path.join(INSTALL_DIR, 'wta.exe')
+
+  console.log('> Copying wt.exe to wta.exe...')
+  fs.copyFileSync(wtExe, wtaExe)
 
   console.log('> Preparing wta.exe to run as administrator...')
-  fs.copyFileSync(wtExe, wtaExe)
   setCompatibilitySettings(wtaExe, 'RUNASADMIN')
 
   console.log('> Adding Windows Terminal to PATH...')
-  addToPath('User', OUTPUT_DIR)
+  addToPath('User', INSTALL_DIR)
 
   console.log('> Creating shortcut for Windows Terminal...')
-  const shortcutDir = path.join(
-    process.env.APPDATA ??
-      path.join(process.env.USERPROFILE ?? '', 'AppData', 'Roaming'),
-    'Microsoft/Windows/Start Menu/Programs'
+  createShortcut(
+    wtExe,
+    path.join(START_MENU_PROGRAMS_DIR, 'Windows Terminal.lnk')
   )
-  createShortcut(wtExe, path.join(shortcutDir, 'Windows Terminal.lnk'))
 
   console.log('> Adding Windows Terminal to context menu...')
   addToContextMenu('WindowsTerminal', 'Open Terminal', wtExe, false)
