@@ -10,16 +10,14 @@ const app = NoArg.create('iwint', {
 app.on(async () => {
   try {
     if (!(await isElevated())) {
-      throw console.error('Please run this script as an administrator.')
+      throw 'Please run this script as an administrator.'
     }
 
     console.log('Installing Windows Terminal...')
     await install()
   } catch (err: any) {
-    console.error(
-      'An error occurred while installing Windows Terminal:',
-      err.message
-    )
+    console.error('An error occurred while installing Windows Terminal')
+    console.log('!', err.message ?? err)
   } finally {
     const rl = readLine.createInterface({
       input: process.stdin,
