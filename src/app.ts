@@ -1,7 +1,6 @@
 import NoArg from 'noarg'
 import readLine from 'readline'
 import install from './install'
-import isElevated from 'is-elevated'
 
 const app = NoArg.create('iwint', {
   description: 'Install Windows Terminal',
@@ -9,10 +8,6 @@ const app = NoArg.create('iwint', {
 
 app.on(async () => {
   try {
-    if (!(await isElevated())) {
-      throw 'Please run this script as an administrator.'
-    }
-
     console.log('Installing Windows Terminal...')
     await install()
   } catch (err: any) {
@@ -36,4 +31,4 @@ app.on(async () => {
   }
 })
 
-export default app
+app.start()

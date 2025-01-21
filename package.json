@@ -1,11 +1,11 @@
 {
   "name": "iwint",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "type": "commonjs",
   "scripts": {
     "build": "tsc",
     "tsc": "tsc --watch",
-    "dev": "run ./src/index.ts",
+    "dev": "node --watch ./dist/index.js",
     "start": "node ./dist/index.js"
   },
   "bin": "./dist/bin.js",
@@ -19,6 +19,7 @@
     "env-win": "^0.0.0",
     "follow-redirects": "^1.15.9",
     "is-elevated": "^4.0.0",
-    "noarg": "^3.1.8"
+    "noarg": "^3.1.8",
+    "sudo-prompt": "^9.2.1"
   }
 }
