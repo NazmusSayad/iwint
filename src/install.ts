@@ -6,18 +6,9 @@ import getLatestZip from './getLatestZip'
 import createShortcut from './createShortcut'
 import addToContextMenu from './addToContextMenu'
 import setCompatibilitySettings from './setCompatibilitySettings'
+import config from './config'
 
 export default async function () {
-  const INSTALL_DIR = path.join(
-    process.env.ProgramW6432 ?? process.env.PROGRAMFILES ?? 'C:\\Program Files',
-    'Windows Terminal'
-  )
-
-  const START_MENU_PROGRAMS_DIR = path.join(
-    process.env.ProgramData ?? process.env.ALLUSERSPROFILE ?? 'C:\\ProgramData',
-    'Microsoft\\Windows\\Start Menu\\Programs'
-  )
-
   console.log('> Downloading latest Windows Terminal...')
   const zipBuffer = await getLatestZip()
 
@@ -27,7 +18,7 @@ export default async function () {
   console.log('- Writing files to disk...')
   zip.getEntries().forEach((entry) => {
     const entryPathParts = entry.entryName.split('/').slice(1).join('/')
-    const outputPath = path.join(INSTALL_DIR, entryPathParts)
+    const outputPath = path.join(config.installDir, entryPathParts)
 
     if (entry.isDirectory) {
       fs.mkdirSync(outputPath, { recursive: true })
@@ -36,8 +27,8 @@ export default async function () {
     }
   })
 
-  const wtExe = path.join(INSTALL_DIR, 'wt.exe')
-  const wtaExe = path.join(INSTALL_DIR, 'wta.exe')
+  const wtExe = path.join(config.installDir, 'wt.exe')
+  const wtaExe = path.join(config.installDir, 'wta.exe')
 
   console.log('> Copying wt.exe to wta.exe...')
   fs.copyFileSync(wtExe, wtaExe)
@@ -46,18 +37,18 @@ export default async function () {
   setCompatibilitySettings(wtaExe, 'RUNASADMIN')
 
   console.log('> Adding Windows Terminal to PATH...')
-  addToPath('User', INSTALL_DIR)
+  addToPath('User', config.installDir)
 
   console.log('> Creating shortcut for Windows Terminal...')
   createShortcut(
     wtExe,
-    path.join(START_MENU_PROGRAMS_DIR, 'Windows Terminal.lnk')
+    path.join(config.startMenuDir, config.startMenuLinkFileName)
   )
 
   console.log('> Adding Windows Terminal to context menu...')
-  addToContextMenu('WindowsTerminal', 'Open Terminal', wtExe, false)
+  addToContextMenu(config.contextMenuKey, 'Open Terminal', wtExe, false)
   addToContextMenu(
-    'WindowsTerminalAdmin',
+    config.contextMenuKeyAdmin,
     'Open Terminal (Admin)',
     wtaExe,
     true
