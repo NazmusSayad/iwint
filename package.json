@@ -1,6 +1,6 @@
 {
-  "name": "iwint",
-  "version": "1.0.4",
+  "name": "inwt",
+  "version": "1.0.0",
   "type": "commonjs",
   "scripts": {
     "build": "tsc",

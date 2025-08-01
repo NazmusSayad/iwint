@@ -2,7 +2,7 @@ import NoArg from 'noarg'
 import readLine from 'readline'
 import install from './install'
 
-const app = NoArg.create('iwint', {
+const app = NoArg.create('inwt', {
   description: 'Install Windows Terminal',
 })
 

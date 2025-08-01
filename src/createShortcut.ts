@@ -4,6 +4,7 @@ export default function (target: string, shortcut: string) {
   const psScript = [
     `$WshShell = New-Object -ComObject WScript.Shell`,
     `$Shortcut = $WshShell.CreateShortcut("${shortcut}")`,
+    `$Shortcut.WorkingDirectory = "%USERPROFILE%\\Desktop"`,
     `$Shortcut.TargetPath = "${target}"`,
     `$Shortcut.Save()`,
   ]
